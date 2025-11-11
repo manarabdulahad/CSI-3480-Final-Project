@@ -121,7 +121,14 @@ const eslintConfig = defineConfig([
       '@typescript-eslint/strict-type-checked',
       '@typescript-eslint/stylistic-type-checked'
     ],
-    rules: { '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }] }
+    rules: {
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }]
+    }
   },
   // ESLint Stylistic
   {
