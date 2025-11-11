@@ -46,7 +46,7 @@ const eslintConfig = defineConfig([
       'eqeqeq': ['error'],
       'func-name-matching': ['error'],
       'func-style': ['error', 'declaration'],
-      'new-cap': ['error'],
+      // 'new-cap': ['error'],
       'no-alert': ['warn'],
       'no-array-constructor': ['error'],
       'no-bitwise': ['error'],

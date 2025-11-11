@@ -1,4 +1,11 @@
 import type { Metadata } from 'next';
+import { Roboto } from 'next/font/google';
+
+import ThemeProvider from '@/components/ThemeProvider';
+
+import '@/styles/globals.css';
+
+const roboto = Roboto({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Password Manager',
@@ -7,9 +14,16 @@ export const metadata: Metadata = {
 
 function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang='en'>
-      <body className='antialiased'>
-        {children}
+    <html lang='en' suppressHydrationWarning>
+      <body className={`${roboto.className} antialiased`}>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='dark'
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
