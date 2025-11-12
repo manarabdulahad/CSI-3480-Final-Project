@@ -37,10 +37,10 @@ npm i
 The `.env` file in the `/frontend` directory must be created with the following fields. Below is an example.
 
 ```
-BACKEND_URL="http://localhost:8001"
+API_URL="http://localhost:8001"
 ```
 
-- `BACKEND_URL`: The URL at which the backend is hosted.
+- `API_URL`: The URL at which the backend is hosted.
   - **DO NOT INCLUDE THE TRAILING SLASH!**
 
 **4. Start the Development Server (Optional)**
