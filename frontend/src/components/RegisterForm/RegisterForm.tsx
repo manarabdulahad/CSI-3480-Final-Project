@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { pbkdf2Sync } from 'pbkdf2';
 
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -10,6 +11,8 @@ import { Input } from '@/components/ui/Input';
 import { register } from '@/actions/auth';
 
 import { isValidEmail } from '@/util/string';
+import { randomSalt } from '@/util/string';
+import { passwordMeetsRequirements } from '@/util/password';
 
 function RegisterForm() {
   const [email, setEmail] = useState('');
@@ -32,8 +35,16 @@ function RegisterForm() {
       // Passwords do not match.
       return;
     }
+    if(!passwordMeetsRequirements(password)) {
+      alert('Password does not meet requirements. It must be at least 8 characters long and contain at least 1 number.');
+      // Password does not meet requirements.
+      return;
+    }
 
-    const registerSuccess = await register(email, password);
+    const salt = randomSalt(32);
+    const verifier = pbkdf2Sync(password, salt, 1, 32).toString('hex');
+
+    const registerSuccess = await register(email, salt, verifier);
     if(registerSuccess) {
       redirect('/');
     }
