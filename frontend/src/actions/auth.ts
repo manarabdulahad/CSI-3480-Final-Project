@@ -5,7 +5,7 @@ import { pbkdf2Sync } from 'pbkdf2';
 
 import { getSession } from '@/util/auth';
 import { randomSalt } from '@/util/string';
-import { post } from '@/util/api';
+import { get, post } from '@/util/api';
 
 
 export async function register(email: string, password: string): Promise<boolean> {
@@ -22,7 +22,7 @@ export async function register(email: string, password: string): Promise<boolean
 }
 
 export async function login(email: string, password: string): Promise<boolean> {
-  const saltResponse = await post('/get-salt', { email });
+  const saltResponse = await get('/get-salt', { email });
   if(saltResponse.status !== 200) {
     return false;
   }
