@@ -14,14 +14,14 @@ function LoginForm() {
   const [password, setPassword] = useState('');
 
   async function handleLogin() {
-    if(!email || !password) {
+    if (!email || !password) {
       alert('Please fill in all fields.');
       // Missing fields.
       return;
     }
 
     const loginSuccess = await login(email, password);
-    if(loginSuccess) {
+    if (loginSuccess) {
       redirect('/');
     }
 
@@ -30,25 +30,27 @@ function LoginForm() {
 
   return (
     <>
-    <Input
+      <Input
         placeholder='Email'
         value={email}
         onChange={(e) => {
-          setEmail(e.target.value)
+          setEmail(e.target.value);
         }}
-        />
+      />
       <Input
         placeholder='Password'
         value={password}
         onChange={(e) => {
-          setPassword(e.target.value)
+          setPassword(e.target.value);
         }}
       />
-      <Button onClick={handleLogin}
-      >
+      <Button onClick={handleLogin}>
         Log In
       </Button>
-      <p>Don't have an account? <Link href='/register'>Register</Link></p>
+      <p>
+        {'Don\'t have an account?'}
+        <Link href='/register'>Register</Link>
+      </p>
     </>
   );
 }

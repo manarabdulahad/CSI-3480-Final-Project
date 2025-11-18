@@ -2,7 +2,7 @@ export function randomSalt(length: number): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
   let result = '';
-  for(let i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * chars.length);
     result += chars[randomIndex];
   }
@@ -11,7 +11,7 @@ export function randomSalt(length: number): string {
 }
 
 export function isValidEmail(email: string) {
-  if(typeof email !== 'string') {
+  if (typeof email !== 'string') {
     throw new TypeError('Email must be typeof string.');
   }
 
