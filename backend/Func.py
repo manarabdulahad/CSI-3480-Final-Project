@@ -1,4 +1,4 @@
-from database import create_user, delete_user, get_salt, create_item, delete_item
+from database import create_user, delete_user, get_salt, create_item, delete_item, get_all_user_items
 
 def db_get_salt(email):
   response = get_salt(email)
@@ -41,3 +41,12 @@ def db_delete_item(item_guid):
     except Exception as e:
        print(f"error deleting item: {e}")
        return False
+    
+def db_get_all_user_items(user_guid):
+    try:
+       items - get_all_user_items(user_guid)
+       return items
+    except Exception as e:
+       print(f"error getting user items: {e}")
+       return None
+      

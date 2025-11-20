@@ -92,3 +92,17 @@ def delete_item(guid):
     else:
         print(f" Item with GUID {guid} does not exist.")
         return False
+
+def get_all_user_items(user_guid):
+    "Return all items that belong to a specific user."
+    items_ref = db.collection('items')
+    items = items_ref.where('user_guid', '==', user_guid).get()
+
+    results = []
+    for item in items:
+        data = item.to_dict()
+        data["guid"] = item.id
+        results.append(data)
+
+    print(f" Retrieved {len(results)} items for user {user_guid}")
+    return results
