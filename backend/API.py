@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from Func import db_get_salt, db_register_user
+from Func import db_get_salt, db_create_user, db_delete_user, db_create_item, db_delete_item, db_get_all_user_items
 
 app = Flask(__name__)
 
@@ -21,7 +21,7 @@ def register():
   salt = data["salt"]
   verifier = data["verifier"]
 
-  success = db_register_user(email, salt, verifier)
+  success = db_create_user(email, salt, verifier)
   if success:
       return "", 201
   return "", 400
@@ -33,3 +33,41 @@ def login():
   verifier = data["verifier"]
 
   return "", 200
+
+@app.route("/delete-user", methods=["DELETE"])
+def delete_user_route(guid):
+  success = db_delete_user(guid)
+  if success:
+    return "", 203
+  return "", 403
+
+@app.route("/create-item", methods=["POST"])
+def create_item_route():
+  data = request.json
+  item = data["item"]
+  user_guid = item["user_guid"]
+  name = item["name"]
+  username = item["username"]
+  password = item["password"]
+
+  success = db_create_item(user_guid, name, username, password)
+  if success:
+      return "", 201
+  return "", 404
+
+@app.route("/delete-item", methods=["DELETE"])
+def delete_item_route(item_guid):
+  success = db_delete_item(item_guid)
+
+  if success:
+      return "", 203
+  return "", 403
+
+@app.route("/get-user-items", methods=["GET"])
+def get_user_items_route():
+   items = db_get_all_user_items(user_guid)
+
+   if items is None:
+      return jsonify({"error": "could not retrieve items"}), 505
+   
+   return jsonify({"items": items}), 200
