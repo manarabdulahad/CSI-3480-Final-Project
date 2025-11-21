@@ -12,8 +12,11 @@ async function LoginPage() {
   }
 
   return (
-    <div>
-      <LoginForm />
+    <div className='flex h-full w-full items-center justify-center p-4'>
+      <div className='w-full max-w-sm flex flex-col gap-4'>
+        <p className='text-center text-2xl font-bold'>Password Manager</p>
+        <LoginForm />
+      </div>
     </div>
   );
 }

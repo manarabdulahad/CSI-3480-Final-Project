@@ -7,6 +7,8 @@ import { pbkdf2Sync } from 'pbkdf2';
 
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Label } from '@/components/ui/Label';
 
 import { register } from '@/actions/auth';
 
@@ -43,7 +45,7 @@ function RegisterForm() {
     const salt = randomSalt(32);
     const verifier = pbkdf2Sync(password, salt, 1, 32).toString('hex');
 
-    const registerSuccess = await register(email, salt, verifier as string);
+    const registerSuccess = await register(email, salt, verifier);
     if (registerSuccess) {
       redirect('/');
     }
@@ -52,36 +54,56 @@ function RegisterForm() {
   }
 
   return (
-    <>
-      <Input
-        placeholder='Email'
-        value={email}
-        onChange={(e) => {
-          setEmail(e.target.value);
-        }}
-      />
-      <Input
-        placeholder='Password'
-        value={password}
-        onChange={(e) => {
-          setPassword(e.target.value);
-        }}
-      />
-      <Input
-        placeholder='Confirm Password'
-        value={confirmPassword}
-        onChange={(e) => {
-          setConfirmPassword(e.target.value);
-        }}
-      />
-      <Button onClick={handleRegister}>
-        Register
-      </Button>
-      <p>
-        Already have an account?
-        <Link href='/login'>Log in</Link>
-      </p>
-    </>
+    <Card>
+      <CardHeader>
+        <CardTitle>Register for an account</CardTitle>
+      </CardHeader>
+      <CardContent className='flex flex-col gap-4'>
+        <div>
+          <Label className='mb-2' htmlFor='email'>Email</Label>
+          <Input
+            placeholder='Email'
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+            id='email'
+          />
+        </div>
+        <div>
+          <Label className='mb-2' htmlFor='password'>Password</Label>
+          <Input
+            placeholder='Password'
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            type='password'
+            id='password'
+          />
+        </div>
+        <div>
+          <Label className='mb-2' htmlFor='confirmPassword'>Confirm Password</Label>
+          <Input
+            placeholder='Confirm Password'
+            value={confirmPassword}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+            }}
+            type='password'
+            id='confirmPassword'
+          />
+        </div>
+        <Button onClick={handleRegister}>
+          Register
+        </Button>
+        <p className='text-center'>
+          Already have an account?
+          {' '}
+          <Link href='/login'>Log in</Link>
+        </p>
+      </CardContent>
+    </Card>
   );
 }
 

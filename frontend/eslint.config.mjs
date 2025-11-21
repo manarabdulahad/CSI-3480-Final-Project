@@ -34,7 +34,6 @@ const eslintConfig = defineConfig([
       'arrow-body-style': ['error', 'always'],
       'block-scoped-var': ['error'],
       'camelcase': ['error', { properties: 'always' }],
-      'capitalized-comments': ['error'],
       'complexity': ['warn', { max: 10 }],
       'consistent-return': ['error'],
       'consistent-this': ['error'],
