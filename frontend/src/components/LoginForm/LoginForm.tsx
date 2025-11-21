@@ -1,24 +1,26 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Label } from '@/components/ui/Label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/Field';
 
 import { login } from '@/actions/auth';
+import { isValidEmail } from '@/util/string';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginDisabled, setLoginDisabled] = useState(true);
+  const [error, setError] = useState<string>('');
 
   async function handleLogin() {
-    if (!email || !password) {
-      alert('Please fill in all fields.');
-      // Missing fields.
+    if (!isValidEmail(email)) {
+      setError('Login failed. Please check your email and password.');
       return;
     }
 
@@ -26,46 +28,59 @@ function LoginForm() {
     if (loginSuccess) {
       redirect('/');
     }
-
-    alert('Login failed. Please try again.');
+    setError('Login failed. Please check your email and password.');
   }
+
+  useEffect(() => {
+    if (!email || !password) {
+      setLoginDisabled(true);
+      return;
+    }
+    setLoginDisabled(false);
+  }, [email, password]);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Login to your account</CardTitle>
+        <CardDescription>
+          Don't have an account?
+          {' '}
+          <Link href='/register'>Register</Link>
+        </CardDescription>
       </CardHeader>
       <CardContent className='flex flex-col gap-4'>
-        <div>
-          <Label className='mb-2' htmlFor='email'>Email</Label>
-          <Input
-            placeholder='Email'
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            id='email'
-          />
-        </div>
-        <div>
-          <Label className='mb-2' htmlFor='password'>Password</Label>
-          <Input
-            placeholder='Password'
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            type='password'
-            id='password'
-          />
-        </div>
-        <Button onClick={handleLogin}>
-          Log In
-        </Button>
-        <p className='text-center'>
-          {'Don\'t have an account? '}
-          <Link href='/register'>Register</Link>
-        </p>
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor='email'>Email</FieldLabel>
+            <Input
+              placeholder='Email'
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              id='email'
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor='password'>Password</FieldLabel>
+            <Input
+              placeholder='Password'
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              type='password'
+              id='password'
+            />
+          </Field>
+          <FieldError>{error}</FieldError>
+          <Field>
+            <Button onClick={handleLogin} disabled={loginDisabled}>
+              Log In
+            </Button>
+          </Field>
+        </FieldGroup>
       </CardContent>
     </Card>
   );

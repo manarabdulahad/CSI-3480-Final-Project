@@ -12,7 +12,7 @@ def get_salt():
   email = request.args.get("email")
   salt = db_get_salt(email)
 
-  return jsonify({ "salt": salt })
+  return jsonify({ "salt": salt }), 401 if salt == "" else 200
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -31,6 +31,8 @@ def login():
   data = request.json
   email = data["email"]
   verifier = data["verifier"]
+
+  # TODO: Check if login is valid.
 
   return "", 200
 

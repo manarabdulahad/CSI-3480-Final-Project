@@ -9,7 +9,7 @@ import nextVitals from 'eslint-config-next/core-web-vitals';
 
 const eslintConfig = defineConfig([
   // Next
-  ...nextVitals,
+  // ...nextVitals,
   // ESLint JS
   {
     plugins: { js },

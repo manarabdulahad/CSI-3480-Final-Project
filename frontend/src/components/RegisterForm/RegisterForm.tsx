@@ -1,44 +1,62 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { pbkdf2Sync } from 'pbkdf2';
 
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Label } from '@/components/ui/Label';
-
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/Field';
 import { register } from '@/actions/auth';
 
 import { isValidEmail, randomSalt } from '@/util/string';
 import { passwordMeetsRequirements } from '@/util/password';
 
+interface Errors {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  form: string;
+}
+
 function RegisterForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState<Errors>({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    form: ''
+  });
+  const [registerDisabled, setRegisterDisabled] = useState(true);
 
   async function handleRegister() {
-    if (!email || !password || !confirmPassword) {
-      alert('Please fill in all fields.');
-      // Missing fields.
-      return;
-    }
+    let hasErrors = false;
+    const foundErrors: Errors = {
+      email: '',
+      password: '',
+      confirmPassword: '',
+      form: ''
+    };
+
     if (!isValidEmail(email)) {
-      alert('Invalid email.');
-      // Invalid email.
-      return;
-    }
-    if (password !== confirmPassword) {
-      alert('Passwords do not match.');
-      // Passwords do not match.
-      return;
+      foundErrors.email = 'Please enter a valid email address.';
+      hasErrors = true;
     }
     if (!passwordMeetsRequirements(password)) {
-      alert('Password does not meet requirements. It must be at least 8 characters long and contain at least 1 number.');
-      // Password does not meet requirements.
+      foundErrors.password = 'Password must be at least 8 characters and contain 1 number.';
+      hasErrors = true;
+    }
+    if (password !== confirmPassword) {
+      foundErrors.confirmPassword = 'Passwords do not match.';
+      hasErrors = true;
+    }
+    setErrors(foundErrors);
+
+    if (hasErrors) {
       return;
     }
 
@@ -50,58 +68,75 @@ function RegisterForm() {
       redirect('/');
     }
 
-    alert('Registration failed. Please try again.');
+    foundErrors.form = 'Registration failed. Please try again.';
+    setErrors(foundErrors);
   }
+
+  useEffect(() => {
+    if (!email || !password || !confirmPassword) {
+      setRegisterDisabled(true);
+      return;
+    }
+    setRegisterDisabled(false);
+  }, [email, password, confirmPassword]);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Register for an account</CardTitle>
-      </CardHeader>
-      <CardContent className='flex flex-col gap-4'>
-        <div>
-          <Label className='mb-2' htmlFor='email'>Email</Label>
-          <Input
-            placeholder='Email'
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-            id='email'
-          />
-        </div>
-        <div>
-          <Label className='mb-2' htmlFor='password'>Password</Label>
-          <Input
-            placeholder='Password'
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            type='password'
-            id='password'
-          />
-        </div>
-        <div>
-          <Label className='mb-2' htmlFor='confirmPassword'>Confirm Password</Label>
-          <Input
-            placeholder='Confirm Password'
-            value={confirmPassword}
-            onChange={(e) => {
-              setConfirmPassword(e.target.value);
-            }}
-            type='password'
-            id='confirmPassword'
-          />
-        </div>
-        <Button onClick={handleRegister}>
-          Register
-        </Button>
-        <p className='text-center'>
+        <CardDescription>
           Already have an account?
           {' '}
           <Link href='/login'>Log in</Link>
-        </p>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className='flex flex-col gap-4'>
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor='email'>Email</FieldLabel>
+            <Input
+              placeholder='Email'
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              id='email'
+            />
+            <FieldError>{errors.email}</FieldError>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor='password'>Password</FieldLabel>
+            <Input
+              placeholder='Password'
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              type='password'
+              id='password'
+            />
+            <FieldError>{errors.password}</FieldError>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor='confirmPassword'>Confirm Password</FieldLabel>
+            <Input
+              placeholder='Confirm Password'
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+              }}
+              type='password'
+              id='confirmPassword'
+            />
+            <FieldError>{errors.confirmPassword}</FieldError>
+          </Field>
+          <FieldError>{errors.form}</FieldError>
+          <Field>
+            <Button onClick={handleRegister} disabled={registerDisabled}>
+              Register
+            </Button>
+          </Field>
+        </FieldGroup>
       </CardContent>
     </Card>
   );
