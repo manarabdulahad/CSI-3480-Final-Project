@@ -1,13 +1,25 @@
-from database import create_user, delete_user, get_salt, create_item, delete_item, get_all_user_items, login_user
+from database import (
+    create_user,
+    delete_user,
+    get_salt,
+    create_item,
+    delete_item,
+    get_all_user_items,
+    login_user
+)
+
 
 def db_get_salt(email):
     response = get_salt(email)
-    return "" if response is None else response
+    if response is None:
+        return ""
+    return response
 
 
-def db_create_user(email, verifier, salt):
+def db_create_user(email, salt, verifier):
     try:
-        return create_user(email, verifier, salt)
+        guid = create_user(email, verifier, salt)
+        return guid
     except Exception as e:
         print(f"error creating user: {e}")
         return None
@@ -15,7 +27,8 @@ def db_create_user(email, verifier, salt):
 
 def db_delete_user(guid):
     try:
-        return delete_user(guid)
+        success = delete_user(guid)
+        return success
     except Exception as e:
         print(f"error deleting user: {e}")
         return False
@@ -23,16 +36,17 @@ def db_delete_user(guid):
 
 def db_create_item(user_guid, name, username, password):
     try:
-        guid = create_item(user_guid, name, username, password)
-        return guid
+        create_item(user_guid, name, username, password)
+        return True
     except Exception as e:
         print(f"error creating item: {e}")
-        return None
+        return False
 
 
 def db_delete_item(item_guid):
     try:
-        return delete_item(item_guid)
+        delete_item(item_guid)
+        return True
     except Exception as e:
         print(f"error deleting item: {e}")
         return False
@@ -53,15 +67,3 @@ def db_login_user(email, verifier):
     except Exception as e:
         print(f"error logging in user: {e}")
         return None
-
-      user_data = user_doc.to_dict()
-
-      if user_data["verifier"] != verifier:
-          print(f" The verifier does not match.")
-          return None
-      
-      return user_doc.id
-   except Exception as e:
-      print(f"error logging in user: {e}")
-      return None
-      
